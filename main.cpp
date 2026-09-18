@@ -71,6 +71,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
     NULL              // 追加データ
   );
 
+  // 文書を画面端で折り返さない
+  SendMessageW(hwndEdit, EM_SETTARGETDEVICE, 0, 1);
+
   ShowWindow(hwnd, nCmdShow);
 
   BOOL bRet;
