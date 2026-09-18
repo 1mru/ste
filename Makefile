@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++23 -O2 -mwindows -municode
+CXXFLAGS = -Wall -Wextra -std=c++23 -O2 -mwindows -municode -lshcore
 SOURCE = main.cpp
 TARGET = ste
 

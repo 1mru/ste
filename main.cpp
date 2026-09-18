@@ -1,21 +1,21 @@
 #include <windows.h>
 #include <richedit.h>
+#include <shellscalingapi.h>
 
 HWND hwndEdit = NULL;
-
-void OnSize(HWND hwndEdit, int width, int height) {
-  MoveWindow(hwndEdit, 0, 0, width, height, TRUE);
-}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   switch (uMsg) {
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;
+    case WM_SETFOCUS:
+      SetFocus(hwndEdit);
+      return 0;
     case WM_SIZE: {
-      int width = LOWORD(lParam);
-      int height = HIWORD(lParam);
-      OnSize(hwndEdit, width, height);
+      UINT width = LOWORD(lParam);
+      UINT height = HIWORD(lParam);
+      MoveWindow(hwndEdit, 0, 0, width, height, TRUE);
       return 0;
     }
   }
@@ -23,6 +23,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
+  SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
   const wchar_t CLASS_NAME[] = L"ste";
 
   WNDCLASS wc = {};
@@ -74,7 +75,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
   // 文書を画面端で折り返さない
   SendMessageW(hwndEdit, EM_SETTARGETDEVICE, 0, 1);
 
+  // フォント設定
+  CHARFORMAT2 cf = {};
+  cf.cbSize = sizeof(cf);
+  cf.dwMask = CFM_FACE | CFM_SIZE | CFM_COLOR;
+  cf.yHeight= 12 * 20; // 12pt
+  cf.crTextColor = RGB(0, 0, 0);
+  wcscpy_s(cf.szFaceName, L"Consolas");
+  SendMessageW(hwndEdit, EM_SETCHARFORMAT, SCF_ALL, reinterpret_cast<LPARAM>(&cf));
+
   ShowWindow(hwnd, nCmdShow);
+  SetFocus(hwndEdit);
 
   BOOL bRet;
   MSG msg = {};
