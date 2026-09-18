@@ -1,11 +1,28 @@
 #include <windows.h>
+#include <richedit.h>
+
+HWND hwndEdit = NULL;
+
+void OnSize(HWND hwndEdit, int width, int height) {
+  MoveWindow(
+    hwndEdit,
+    0, 0,
+    width, height,
+    TRUE
+  );
+}
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   switch (uMsg) {
     case WM_DESTROY:
       PostQuitMessage(0);
       return 0;
-    // 後ほどRichTextEdit/Scintillaを追加するのでWM_PAINTは不要
+    case WM_SIZE: {
+      int width = LOWORD(lParam);
+      int height = HIWORD(lParam);
+      OnSize(hwndEdit, width, height);
+      return 0;
+    }
   }
   return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
@@ -34,6 +51,21 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
   );
 
   if (hwnd == NULL) return 0;
+
+  LoadLibrary(TEXT("Msftedit.dll"));
+
+  hwndEdit = CreateWindowExW(
+    0,                                                              // 追加スタイル
+    MSFTEDIT_CLASS,                                                 // ウィンドウクラス
+    L"",                                                            // ウィンドウテキスト
+    ES_MULTILINE | WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP,  // 基本スタイル
+    0, 0,                                                           // 大きさ
+    0, 0,                                                           // 位置
+    hwnd,                                                           // 親
+    NULL,                                                           // メニュー
+    hInstance,                                                      // インスタンス
+    NULL                                                            // 追加データ
+  );
 
   ShowWindow(hwnd, nCmdShow);
 
