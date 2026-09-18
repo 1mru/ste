@@ -51,13 +51,17 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
   if (hRichEdit == NULL) return 0;
 
   hwndEdit = CreateWindowExW(
-    0,                // 追加スタイル
+    WS_EX_CLIENTEDGE, // 追加スタイル
     MSFTEDIT_CLASS,   // ウィンドウクラス
     L"",              // ウィンドウテキスト
     ES_MULTILINE |
+    ES_LEFT |
+    ES_AUTOVSCROLL |
+    ES_AUTOHSCROLL |
     WS_VISIBLE |
     WS_CHILD |
-    WS_BORDER |
+    WS_HSCROLL |
+    WS_VSCROLL |
     WS_TABSTOP,
     0, 0,             // 大きさ
     0, 0,             // 位置
