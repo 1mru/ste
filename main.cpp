@@ -1,6 +1,5 @@
 #include <windows.h>
 #include <richedit.h>
-#include <shellscalingapi.h>
 
 // ファイル
 #define IDM_NEW         101
@@ -44,7 +43,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE, PWSTR, int nCmdShow) {
-  SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
+  SetProcessDpiAwarenessContext(
+    DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+  );
+
   const wchar_t CLASS_NAME[] = L"ste";
 
   WNDCLASS wc = {};
